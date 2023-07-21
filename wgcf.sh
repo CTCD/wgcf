@@ -1,3 +1,4 @@
+[ $EUID -ne 0 ] && echo "Please run as root" && exit 0
 type wg || { echo "Please install: sudo apt install wireguard-tools" && exit 0; }
 private_key=$(wg genkey)
 public_key=$(wg pubkey <<<"$private_key")
