@@ -40,5 +40,5 @@ done
 
 [ ! -f yxip ] && wget https://raw.githubusercontent.com/CTCD/wgcf/main/warp-yxip-linux-$(upc_type) -O yxip
 chmod +x yxip && ./yxip
-cat result.csv | head -31
+cat result.csv | awk -F',' '$3 != "timeout ms" {print}' | head -30
 rm -f ip.txt result.csv
