@@ -11,12 +11,11 @@ curl --request POST 'https://api.cloudflareclient.com/v0a2158/reg' \
     --data '{"key": "'$public_key'"}' |
     python3 -m json.tool >/etc/wireguard/wgcfreg.json
 
-[[ ! -s /etc/wireguard/wgcfreg.json || $(grep 'error' /etc/wireguard/wgcfreg.json) ]] && {
-    rm /etc/wireguard/wgcfreg.json
-    curl -s https://api.github.com/repos/ViRb3/wgcf/releases/latest | grep "browser_download_url" | awk -F'"' '/linux_arm64/{print $4}' | xargs wget -O /etc/wireguard/wgcf
-    chmod +x /etc/wireguard/wgcf
+[[ ! -s /etc/wireguard/wgcfreg.json || ! $(grep 'public_key' /etc/wireguard/wgcfreg.json) ]] && {
     cd /etc/wireguard/
-    rm wgcf-account.toml
+    curl -s https://api.github.com/repos/ViRb3/wgcf/releases/latest | grep "browser_download_url" | awk -F'"' '/linux_arm64/{print $4}' | xargs wget -O wgcf
+    chmod +x wgcf
+    rm -f wgcfreg.json wgcf-account.toml
     echo | ./wgcf register
     ./wgcf generate
     wg-quick down wgcf0
@@ -27,13 +26,13 @@ curl --request POST 'https://api.cloudflareclient.com/v0a2158/reg' \
     wg-quick down wgcf0
     echo "[Interface]
     PrivateKey = $private_key
-    Address = $(awk -F'"' '/"addresses"/{getline; print $4}' /etc/wireguard/wgcfreg.json)/32, $(awk -F'"' '/"addresses"/{getline; getline; print $4}' /etc/wireguard/wgcfreg.json)/128
+    Address = $(awk -F'"' '/"addresses"/{endpoint_found=1; next} endpoint_found && /"v4"/{print $4; exit}' /etc/wireguard/wgcfreg.json)/32, $(awk -F'"' '/"addresses"/{endpoint_found=1; next} endpoint_found && /"v6"/{print $4; exit}' /etc/wireguard/wgcfreg.json)/128
     MTU = 1280
     Table = 1234
 
     [Peer]
-    PublicKey = $(awk -F'"' '/"public_key"/{print $4}' /etc/wireguard/wgcfreg.json)
+    PublicKey = $(awk -F'"' '/"peers"/{endpoint_found=1; next} endpoint_found && /"public_key"/{print $4; exit}' /etc/wireguard/wgcfreg.json)
     AllowedIPs = 0.0.0.0/0, ::/0
-    Endpoint = $(awk -F'"' '/"host"/{print $4}' /etc/wireguard/wgcfreg.json)" >/etc/wireguard/wgcf0.conf
+    Endpoint = $(awk -F'"' '/"endpoint"/{endpoint_found=1; next} endpoint_found && /"host"/{print $4; exit}' /etc/wireguard/wgcfreg.json)" >/etc/wireguard/wgcf0.conf
     wg-quick up wgcf0
 }
