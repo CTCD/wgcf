@@ -40,5 +40,5 @@ done
 
 wget https://raw.githubusercontent.com/CTCD/wgcf/main/warp-yxip-linux-$(upc_type) -O yxip
 chmod +x yxip && ./yxip
-cat result.csv | head -21
-rm yxip.sh
+cat result.csv | head -31
+rm -f ip.txt result.csv yxip.sh
