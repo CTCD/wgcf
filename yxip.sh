@@ -20,7 +20,7 @@ generate_random_ipv4() {
 }
 
 generate_random_ipv6() {
-    printf '2606:4700:d%d::%x:%x:%x:%x' $((RANDOM % 2)) $((RANDOM * 2 + RANDOM % 2)) $((RANDOM * 2 + RANDOM % 2)) $((RANDOM * 2 + RANDOM % 2)) $((RANDOM * 2 + RANDOM % 2))
+    printf '2606:4700:d%d::%x:%x:%x:%x' $((RANDOM % 2)) $((RANDOM * RANDOM % 65536)) $((RANDOM * RANDOM % 65536)) $((RANDOM * RANDOM % 65536)) $((RANDOM * RANDOM % 65536))
 }
 
 echo "162.159.192.1" >ip.txt
