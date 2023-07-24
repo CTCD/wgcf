@@ -1,5 +1,14 @@
 [ $EUID -ne 0 ] && echo "Please run as root" && exit 0
-type wg || { echo "Please install: sudo apt install wireguard-tools" && exit 0; }
+type wg || { echo "Please install wireguard-tools" && exit 0; }
+
+upc_type() {
+    case "$(uname -m)" in
+    x86_64 | amd64) echo 'amd64' ;;
+    armv8 | arm64 | aarch64) echo 'arm64' ;;
+    *) red "CPU architecture not supported" && exit 0 ;;
+    esac
+}
+
 private_key=$(wg genkey)
 public_key=$(wg pubkey <<<"$private_key")
 
@@ -13,7 +22,7 @@ curl --request POST 'https://api.cloudflareclient.com/v0a2158/reg' \
 
 [[ ! -s /etc/wireguard/wgcfreg.json || ! $(grep 'public_key' /etc/wireguard/wgcfreg.json) ]] && {
     cd /etc/wireguard/
-    curl -s https://api.github.com/repos/ViRb3/wgcf/releases/latest | grep "browser_download_url" | awk -F'"' '/linux_arm64/{print $4}' | xargs wget -O wgcf
+    curl -s https://api.github.com/repos/ViRb3/wgcf/releases/latest | grep "browser_download_url" | awk -F'"' '/'linux_$(upc_type)'/{print $4}' | xargs wget -O wgcf
     chmod +x wgcf
     rm -f wgcfreg.json wgcf-account.toml
     echo | ./wgcf register
