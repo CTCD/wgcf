@@ -2,8 +2,9 @@
 
 upc_type() {
     case "$(uname -m)" in
-    x86_64 | amd64) echo 'amd64' ;;
     armv8 | arm64 | aarch64) echo 'arm64' ;;
+    x86_64 | amd64) echo 'amd64' ;;
+    i386 | i686) echo '386' ;;
     *) red "CPU architecture not supported" && exit 0 ;;
     esac
 }
