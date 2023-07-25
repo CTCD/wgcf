@@ -34,7 +34,7 @@ while [ $(wc -l <ip.txt) -lt 200 ]; do
     fi
 done
 
-[ ! -f warp-linux-$(upc_type) ] && wget https://raw.githubusercontent.com/CTCD/wgcf/main/warp-linux-$(upc_type)
-chmod +x warp-linux-$(upc_type) && ./warp-linux-$(upc_type)
+[ ! -f warp-linux-$(upc_type) ] && wget https://raw.githubusercontent.com/CTCD/wgcf/main/warp-linux-$(upc_type) && chmod +x warp-linux-$(upc_type)
+./warp-linux-$(upc_type)
 cat result.csv | awk -F',' '$3 != "timeout ms" {print}' | head -30
 rm -f ip.txt result.csv
