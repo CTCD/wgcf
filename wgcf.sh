@@ -29,7 +29,7 @@ curl --request POST 'https://api.cloudflareclient.com/v0a2158/reg' \
     ./wgcf generate
     wg-quick down wgcf0
     grep -v "DNS =" /etc/wireguard/wgcf-profile.conf >/etc/wireguard/wgcf0.conf
-    sed -i '3i Table = 1234' /etc/wireguard/wgcf0.conf
+    sed -i -e '4i Table = 1234' -e 's/MTU =.*/MTU = 1500/' /etc/wireguard/wgcf0.conf
     wg-quick up wgcf0
 } || {
     wg-quick down wgcf0
