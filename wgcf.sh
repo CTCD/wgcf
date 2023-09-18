@@ -36,7 +36,7 @@ curl --request POST 'https://api.cloudflareclient.com/v0a2158/reg' \
     echo "[Interface]
     PrivateKey = $private_key
     Address = $(awk -F'"' '/"addresses"/{endpoint_found=1; next} endpoint_found && /"v4"/{print $4; exit}' /etc/wireguard/wgcfreg.json)/32, $(awk -F'"' '/"addresses"/{endpoint_found=1; next} endpoint_found && /"v6"/{print $4; exit}' /etc/wireguard/wgcfreg.json)/128
-    MTU = 1280
+    MTU = 1500
     Table = 1234
 
     [Peer]
