@@ -29,14 +29,14 @@ curl --request POST 'https://api.cloudflareclient.com/v0a2158/reg' \
     ./wgcf generate
     wg-quick down wgcf0
     grep -v "DNS =" /etc/wireguard/wgcf-profile.conf >/etc/wireguard/wgcf0.conf
-    sed -i -e '5i Table = 1234' -e 's/MTU =.*/MTU = 1420/' /etc/wireguard/wgcf0.conf
+    sed -i -e '5i Table = 1234' -e 's/MTU =.*/MTU = 1340/' /etc/wireguard/wgcf0.conf
     wg-quick up wgcf0
 } || {
     wg-quick down wgcf0
     echo "[Interface]
     PrivateKey = $private_key
     Address = $(awk -F'"' '/"addresses"/{endpoint_found=1; next} endpoint_found && /"v4"/{print $4; exit}' /etc/wireguard/wgcfreg.json)/32, $(awk -F'"' '/"addresses"/{endpoint_found=1; next} endpoint_found && /"v6"/{print $4; exit}' /etc/wireguard/wgcfreg.json)/128
-    MTU = 1420
+    MTU = 1340
     Table = 1234
 
     [Peer]
